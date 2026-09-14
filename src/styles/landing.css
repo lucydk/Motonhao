@@ -1,112 +1,648 @@
 /* ---------- Navbar ---------- */
+
 .navbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 24px; max-width: var(--max-width); margin: 0 auto; width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 24px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
 }
+
 .navbar-brand {
-  font-family: var(--font-display); font-weight: 700; font-size: 1.3rem;
-  color: var(--color-black); letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+
+  text-decoration: none;
 }
-.navbar-brand span { color: var(--color-yellow-dark); -webkit-text-stroke: 0.5px var(--color-black); }
-.navbar-links { display: none; gap: 26px; font-size: 0.92rem; font-weight: 500; }
-.navbar-actions { display: flex; align-items: center; gap: 12px; }
-.navbar-user { font-size: 0.85rem; color: var(--color-text-muted); display: none; }
+
+.navbar-brand img {
+  width: 150px;
+  height: auto;
+  display: block;
+}
+
+.navbar-links {
+  display: none;
+  gap: 30px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.navbar-links a {
+  color: var(--color-black);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.navbar-links a:hover {
+  color: var(--color-orange);
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar-user {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  display: none;
+}
+
 @media (min-width: 860px) {
-  .navbar-links { display: flex; }
-  .navbar-user { display: inline; }
+  .navbar-links {
+    display: flex;
+  }
+
+  .navbar-user {
+    display: inline;
+  }
+
+  .navbar-brand img {
+    width: 165px;
+  }
 }
+
 
 /* ---------- Hero ---------- */
-.landing { background: var(--color-surface-2); }
+
+.landing {
+  background: var(--color-surface-2);
+}
 
 .hero {
-  background: var(--color-black);
+  background:
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(255, 106, 0, 0.10),
+      transparent 30%
+    ),
+    var(--color-black);
+
   color: var(--color-white);
-  border-radius: 0 0 32px 32px;
-  padding: 40px 24px 60px;
+
+  border-radius: 0 0 40px 40px;
+
+  padding: 52px 24px 70px;
+
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 36px;
+
   position: relative;
   overflow: hidden;
 }
-.hero-eyebrow {
-  display: inline-block; font-size: 0.8rem; font-weight: 600;
-  color: var(--color-yellow); margin-bottom: 12px;
-}
-.hero-text h1 {
-  font-size: clamp(2.4rem, 7vw, 3.6rem);
-  color: var(--color-white);
-  margin-bottom: 0.3em;
-}
-.hero-text p { color: rgba(255,255,255,0.72); font-size: 1.05rem; max-width: 460px; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
-.hero .btn-outline { border-color: var(--color-white); color: var(--color-white); }
-.hero .btn-outline:hover { background: var(--color-white); color: var(--color-black); }
 
-.hero-art { display: flex; justify-content: center; }
-.moto-illustration { width: 100%; max-width: 420px; }
-.speed-lines rect { fill: var(--color-yellow); opacity: 0.55; }
-.frame { fill: none; stroke: var(--color-yellow); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
-.wheel { fill: none; stroke: var(--color-white); stroke-width: 8; }
-.seat { fill: var(--color-white); }
-.lamp { fill: var(--color-yellow); }
+
+/* detalhes de velocidade */
+
+.hero::before {
+  content: '';
+
+  position: absolute;
+
+  width: 450px;
+  height: 450px;
+
+  background: var(--color-orange);
+
+  opacity: 0.07;
+  filter: blur(90px);
+
+  border-radius: 50%;
+
+  right: -180px;
+  top: -180px;
+
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+
+  position: absolute;
+
+  width: 300px;
+  height: 4px;
+
+  background: var(--color-orange);
+
+  transform: rotate(-12deg);
+
+  bottom: 35px;
+  left: -45px;
+
+  box-shadow:
+    0 12px 0 rgba(255, 106, 0, 0.55),
+    0 24px 0 rgba(255, 106, 0, 0.25);
+
+  pointer-events: none;
+}
+
+
+/* ---------- Texto ---------- */
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+
+  width: fit-content;
+
+  font-size: 0.76rem;
+  font-weight: 800;
+
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+
+  color: var(--color-orange);
+
+  background: rgba(255, 106, 0, 0.10);
+
+  border: 1px solid rgba(255, 106, 0, 0.35);
+
+  padding: 8px 13px;
+
+  border-radius: 999px;
+
+  margin-bottom: 18px;
+}
+
+.hero-text h1 {
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+
+  line-height: 0.98;
+
+  color: var(--color-white);
+
+  margin-bottom: 0.35em;
+
+  letter-spacing: -0.04em;
+}
+
+.hero-text p {
+  color: rgba(255, 255, 255, 0.70);
+
+  font-size: 1.05rem;
+
+  line-height: 1.6;
+
+  max-width: 460px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 12px;
+
+  margin-top: 24px;
+}
+
+
+/* ---------- Botão principal ---------- */
+
+.hero .btn-primary {
+  background: var(--color-orange);
+
+  color: var(--color-white);
+
+  border: none;
+
+  box-shadow:
+    0 8px 24px rgba(255, 106, 0, 0.25);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hero .btn-primary:hover {
+  background: var(--color-orange-dark);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 30px rgba(255, 106, 0, 0.35);
+}
+
+
+/* ---------- Botão secundário ---------- */
+
+.hero .btn-outline {
+  border-color: rgba(255, 255, 255, 0.8);
+
+  color: var(--color-white);
+
+  background: transparent;
+}
+
+.hero .btn-outline:hover {
+  background: var(--color-white);
+
+  color: var(--color-black);
+
+  border-color: var(--color-white);
+}
+
+
+/* ---------- Logo no Hero ---------- */
+
+.hero-art {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-logo {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+
+  filter: drop-shadow(0 18px 35px rgba(0, 0, 0, 0.55));
+
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.hero-logo:hover {
+  transform: scale(1.025);
+  filter: drop-shadow(0 22px 40px rgba(255, 106, 0, 0.25));
+}
+
+/* ---------- Desktop Hero ---------- */
 
 @media (min-width: 860px) {
-  .hero { flex-direction: row; align-items: center; padding: 70px 60px; max-width: var(--max-width); margin: 0 auto; border-radius: 0 0 40px 40px; }
-  .hero-text, .hero-art { flex: 1; }
+
+  .hero {
+    flex-direction: row;
+
+    align-items: center;
+
+    padding: 70px 60px;
+
+    max-width: var(--max-width);
+
+    margin: 0 auto;
+
+    border-radius: 0 0 40px 40px;
+
+    min-height: 460px;
+  }
+
+  .hero-text,
+  .hero-art {
+    flex: 1;
+  }
+
+  .hero-text {
+    max-width: 560px;
+  }
+
+  .hero-art {
+    justify-content: center;
+  }
+
+  .hero-logo {
+    max-width: 500px;
+  }
 }
+
 
 /* ---------- Como funciona ---------- */
-.steps-section, .safety-section, .driver-cta {
-  max-width: var(--max-width); margin: 0 auto; padding: 56px 24px;
-}
-.steps-section h2, .safety-header h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); }
 
-.steps-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+.steps-section,
+.safety-section,
+.driver-cta {
+  max-width: var(--max-width);
+
+  margin: 0 auto;
+
+  padding: 64px 24px;
+}
+
+.steps-section h2,
+.safety-header h2 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+
+  letter-spacing: -0.03em;
+}
+
+.steps-grid {
+  display: grid;
+
+  grid-template-columns: 1fr;
+
+  gap: 16px;
+
+  margin-top: 28px;
+}
+
 .step-card {
-  background: var(--color-surface); border: 1px solid var(--color-border);
-  border-radius: var(--radius-md); padding: 22px; position: relative;
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-lg);
+
+  padding: 24px;
+
+  position: relative;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
+
+.step-card:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(255, 106, 0, 0.35);
+
+  box-shadow: var(--shadow-card);
+}
+
 .step-number {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px; border-radius: 50%; background: var(--color-yellow);
-  font-family: var(--font-display); font-weight: 700; margin-bottom: 12px;
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 12px;
+
+  background: var(--color-orange);
+
+  color: var(--color-white);
+
+  font-family: var(--font-display);
+
+  font-weight: 800;
+
+  margin-bottom: 14px;
 }
-.step-card h3 { font-size: 1.05rem; margin-bottom: 6px; }
-.step-card p { font-size: 0.9rem; margin: 0; }
+
+.step-card h3 {
+  font-size: 1.05rem;
+
+  margin-bottom: 6px;
+}
+
+.step-card p {
+  font-size: 0.9rem;
+
+  margin: 0;
+
+  color: var(--color-text-muted);
+
+  line-height: 1.5;
+}
 
 @media (min-width: 700px) {
-  .steps-grid { grid-template-columns: repeat(4, 1fr); }
+  .steps-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
+
 
 /* ---------- Segurança ---------- */
-.safety-header { max-width: 560px; margin-bottom: 24px; }
-.safety-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+.safety-header {
+  max-width: 560px;
+
+  margin-bottom: 28px;
+}
+
+.safety-grid {
+  display: grid;
+
+  grid-template-columns: 1fr;
+
+  gap: 16px;
+}
+
 .safety-card {
-  display: flex; gap: 14px; align-items: flex-start;
-  background: var(--color-surface); border: 1px solid var(--color-border);
-  border-radius: var(--radius-md); padding: 20px;
+  display: flex;
+
+  gap: 14px;
+
+  align-items: flex-start;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-lg);
+
+  padding: 22px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
-.safety-icon { font-size: 1.6rem; }
-.safety-card h3 { font-size: 1rem; margin-bottom: 4px; }
-.safety-card p { font-size: 0.88rem; margin: 0; }
+
+.safety-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: var(--shadow-card);
+}
+
+.safety-icon {
+  font-size: 1.6rem;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 106, 0, 0.10);
+
+  border-radius: 12px;
+
+  flex-shrink: 0;
+}
+
+.safety-card h3 {
+  font-size: 1rem;
+
+  margin-bottom: 4px;
+}
+
+.safety-card p {
+  font-size: 0.88rem;
+
+  margin: 0;
+
+  color: var(--color-text-muted);
+
+  line-height: 1.5;
+}
+
 @media (min-width: 700px) {
-  .safety-grid { grid-template-columns: repeat(2, 1fr); }
+  .safety-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
+
 
 /* ---------- CTA motociclista ---------- */
+
 .driver-cta {
-  background: var(--color-yellow); border-radius: var(--radius-lg);
-  margin-bottom: 56px; text-align: center;
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-orange),
+      var(--color-orange-dark)
+    );
+
+  border-radius: var(--radius-xl);
+
+  margin-bottom: 56px;
+
+  text-align: center;
+
+  color: var(--color-white);
+
+  position: relative;
+
+  overflow: hidden;
 }
-.driver-cta-text { max-width: 560px; margin: 0 auto; }
-.driver-cta h2 { color: var(--color-black); }
-.driver-cta p { color: rgba(10,10,10,0.75); }
-.driver-cta .btn-primary { background: var(--color-black); color: var(--color-yellow); }
-.driver-cta .btn-primary:hover { background: var(--color-black-2); }
+
+.driver-cta::after {
+  content: '';
+
+  position: absolute;
+
+  width: 300px;
+  height: 300px;
+
+  border: 35px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 50%;
+
+  right: -100px;
+  top: -120px;
+}
+
+.driver-cta-text {
+  max-width: 560px;
+
+  margin: 0 auto;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+.driver-cta h2 {
+  color: var(--color-white);
+
+  margin-bottom: 10px;
+}
+
+.driver-cta p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.driver-cta .btn-primary {
+  background: var(--color-black);
+
+  color: var(--color-white);
+
+  box-shadow: none;
+}
+
+.driver-cta .btn-primary:hover {
+  background: var(--color-black-2);
+}
+
+
+/* ---------- Footer ---------- */
 
 .landing-footer {
-  text-align: center; padding: 24px; font-size: 0.8rem; color: var(--color-text-muted);
+  text-align: center;
+
+  padding: 28px 24px;
+
+  font-size: 0.8rem;
+
+  color: var(--color-text-muted);
+
   border-top: 1px solid var(--color-border);
+}
+/* =================================
+   MINI LOGO MOTONHÃO - NAVBAR
+================================= */
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+
+  background: #080808;
+
+  padding: 8px 12px;
+  border-radius: 7px;
+
+  text-decoration: none;
+
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-style: italic;
+
+  letter-spacing: -0.07em;
+  line-height: 1;
+
+  transform: skew(-5deg);
+
+  box-shadow: 4px 4px 0 #ff6a00;
+
+  transition: all 0.2s ease;
+}
+
+/* MOTO — BRANCO */
+
+.logo-moto {
+  color: #ffffff;
+}
+
+/* NHÃO — LARANJA */
+
+.logo-nhao {
+  color: #ff6a00;
+}
+
+.navbar-brand:hover {
+  transform: skew(-5deg) translateY(-1px);
+
+  box-shadow: 5px 5px 0 #ff6a00;
+}
+
+
+/* DESKTOP */
+
+@media (min-width: 860px) {
+  .navbar-brand {
+    font-size: 1.4rem;
+    padding: 9px 14px;
+  }
 }

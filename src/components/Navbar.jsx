@@ -12,8 +12,11 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
+
+      {/* LOGO MOTONHÃO */}
       <Link to="/" className="navbar-brand">
-        Moton<span>hão</span>
+        <span className="logo-moto">MOTO</span>
+        <span className="logo-nhao">NHÃO</span>
       </Link>
 
       <nav className="navbar-links">
@@ -25,13 +28,27 @@ export default function Navbar() {
       <div className="navbar-actions">
         {isAuthenticated ? (
           <>
-            <span className="navbar-user">Olá, {profile?.full_name?.split(' ')[0] || '...'}</span>
-            <button className="btn btn-ghost btn-sm" onClick={handleSignOut}>Sair</button>
+            <span className="navbar-user">
+              Olá, {profile?.full_name?.split(' ')[0] || '...'}
+            </span>
+
+            <button
+              className="btn btn-ghost btn-sm"
+              onClick={handleSignOut}
+            >
+              Sair
+            </button>
           </>
         ) : (
-          <Link to="/entrar" className="btn btn-primary btn-sm">Entrar</Link>
+          <Link
+            to="/entrar"
+            className="btn btn-primary btn-sm"
+          >
+            Entrar
+          </Link>
         )}
       </div>
+
     </header>
   )
 }

@@ -20,8 +20,10 @@
   border-top: 2px solid transparent;
 }
 .bottom-nav-icon { font-size: 1.25rem; }
-.bottom-nav-item.is-active { color: var(--color-yellow); border-top-color: var(--color-yellow); }
-
+.bottom-nav-item.is-active {
+  color: var(--color-orange);
+  border-top-color: var(--color-orange);
+}
 .request-card { display: flex; flex-direction: column; gap: 12px; }
 .request-form { display: flex; flex-direction: column; gap: 14px; }
 

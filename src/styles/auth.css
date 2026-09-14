@@ -1,12 +1,31 @@
 .auth-page {
-  min-height: 80vh; display: flex; align-items: center; justify-content: center;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 32px 20px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 106, 0, 0.12),
+      transparent 35%
+    ),
+    var(--color-surface-2);
 }
 .auth-card {
-  width: 100%; max-width: 400px;
-  background: var(--color-surface); border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg); padding: 32px 26px;
-  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: 400px;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+
+  padding: 34px 28px;
+
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.08);
 }
 .auth-card-wide { max-width: 460px; }
 .auth-card h1 { font-size: 1.6rem; }
@@ -23,4 +42,7 @@
   flex: 1; border: none; background: transparent; padding: 10px; border-radius: 999px;
   font-weight: 600; font-size: 0.88rem; color: var(--color-text-muted);
 }
-.role-switch button.is-active { background: var(--color-black); color: var(--color-yellow); }
+.role-switch button.is-active {
+  background: var(--color-black);
+  color: var(--color-orange);
+}
