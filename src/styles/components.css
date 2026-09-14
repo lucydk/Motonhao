@@ -405,3 +405,6 @@
     padding: 9px 14px !important;
   }
 }
+.navbar-brand {
+  background: red !important;
+}
