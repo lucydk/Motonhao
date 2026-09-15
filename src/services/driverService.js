@@ -35,6 +35,34 @@ export async function updateDriverProfile(driverId, updates) {
   return data
 }
 
+// ---------------------------------------------------------------
+// Verificação de cadastro (aprovação pelo administrador)
+// ---------------------------------------------------------------
+
+export async function approveDriver(driverId) {
+  const { data, error } = await supabase
+    .from('drivers')
+    .update({ verification_status: 'approved', verification_note: null })
+    .eq('id', driverId)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+export async function rejectDriver(driverId, note) {
+  const { data, error } = await supabase
+    .from('drivers')
+    .update({ verification_status: 'rejected', verification_note: note || null })
+    .eq('id', driverId)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
 export async function getEarnings(driverId) {
   const { data, error } = await supabase
     .from('rides')

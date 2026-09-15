@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { cancelRide } from '../../services/rideService'
 import { submitRating } from '../../services/ratingService'
 import { useToast } from '../../context/ToastContext'
+import MapReal from '../../components/MapReal'
 import MapMock from '../../components/MapMock'
 import RideStatus from '../../components/RideStatus'
 import DriverCard from '../../components/DriverCard'
@@ -68,6 +69,14 @@ export default function ActiveRide() {
 
   const canCancel = ['searching', 'accepted'].includes(activeRide.status)
 
+  // Corridas criadas antes da integração com o OSM não têm coordenadas salvas;
+  // nesse caso caímos de volta para o mapa simulado, sem quebrar nada.
+  const hasCoords =
+    activeRide.origin_lat != null &&
+    activeRide.origin_lng != null &&
+    activeRide.destination_lat != null &&
+    activeRide.destination_lng != null
+
   return (
     <div className="page">
       {activeRide.status === 'searching' ? (
@@ -80,7 +89,14 @@ export default function ActiveRide() {
         <h1>Sua corrida</h1>
       )}
 
-      <MapMock origin={activeRide.origin} destination={activeRide.destination} status={activeRide.status} />
+      {hasCoords ? (
+        <MapReal
+          origin={{ lat: activeRide.origin_lat, lon: activeRide.origin_lng }}
+          destination={{ lat: activeRide.destination_lat, lon: activeRide.destination_lng }}
+        />
+      ) : (
+        <MapMock origin={activeRide.origin} destination={activeRide.destination} status={activeRide.status} />
+      )}
 
       <RideStatus status={activeRide.status} />
 

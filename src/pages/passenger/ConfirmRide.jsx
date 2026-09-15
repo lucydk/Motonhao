@@ -19,7 +19,7 @@ export default function ConfirmRide() {
   const { user } = useAuth()
   const { watchRide } = useRide()
   const { showToast } = useToast()
-  const { origin, destination, option } = location.state || {}
+  const { origin, destination, option, originCoords, destinationCoords } = location.state || {}
   const [paymentMethod, setPaymentMethod] = useState('cash')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -38,7 +38,9 @@ export default function ConfirmRide() {
         estimatedTime: option.estimatedTime,
         price: option.price,
         rideType: option.rideType,
-        paymentMethod
+        paymentMethod,
+        originCoords,
+        destinationCoords
       })
       await watchRide(ride.id)
       showToast('Procurando um motociclista para você…', 'info')

@@ -23,7 +23,11 @@ export default function DriverDashboard() {
   const [checking, setChecking] = useState(true)
   const [acceptingId, setAcceptingId] = useState(null)
 
-  const { rides, loading: ridesLoading, removeRide, refresh } = useAvailableRides(isOnline)
+  const isApproved = driver?.verification_status
+    ? driver.verification_status === 'approved'
+    : true // motociclistas de antes dessa migração (sem o campo) continuam liberados
+
+  const { rides, loading: ridesLoading, removeRide, refresh } = useAvailableRides(isOnline && isApproved)
 
   useEffect(() => {
     if (!driver) return
@@ -32,7 +36,10 @@ export default function DriverDashboard() {
   }, [driver])
 
   useEffect(() => {
-    if (!driver) return
+    if (!driver || !isApproved) {
+      setChecking(false)
+      return
+    }
     let mounted = true
     getDriverActiveRide(driver.id).then((ride) => {
       if (!mounted) return
@@ -45,7 +52,7 @@ export default function DriverDashboard() {
     })
     return () => { mounted = false }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver?.id])
+  }, [driver?.id, isApproved])
 
   const handleToggleOnline = useCallback(async () => {
     if (!driver) return
@@ -79,6 +86,35 @@ export default function DriverDashboard() {
   }
 
   if (checking || !driver) return <Loading fullScreen label="Carregando painel…" />
+
+  // Cadastro ainda em análise pelo administrador
+  if (driver.verification_status === 'pending') {
+    return (
+      <div className="page">
+        <div className="verification-screen">
+          <span className="verification-icon" aria-hidden="true">⏳</span>
+          <h1>Cadastro em análise</h1>
+          <p>
+            Seu cadastro como motociclista está sendo verificado pela nossa equipe.
+            Assim que for aprovado, você poderá ficar online e receber corridas.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Cadastro reprovado pelo administrador
+  if (driver.verification_status === 'rejected') {
+    return (
+      <div className="page">
+        <div className="verification-screen">
+          <span className="verification-icon" aria-hidden="true">⚠️</span>
+          <h1>Cadastro não aprovado</h1>
+          <p>{driver.verification_note || 'Seu cadastro não foi aprovado. Entre em contato com o suporte para mais informações.'}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="page">

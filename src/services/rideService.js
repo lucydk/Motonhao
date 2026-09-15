@@ -1,9 +1,11 @@
 import { supabase } from '../lib/supabase'
 
 // ---------------------------------------------------------------
-// Simulação de distância/tempo/preço (não há integração de mapa).
-// Gera valores pseudo-aleatórios, porém estáveis, a partir do texto
-// de origem/destino, para simular uma estimativa consistente.
+// Estimativa de preço/tempo a partir de uma distância em km.
+// Antes a distância vinha de um hash pseudo-aleatório do texto de
+// origem/destino; agora pode vir da rota real calculada pelo OSRM
+// (veja src/services/osmService.js), mas a função abaixo continua
+// funcionando do mesmo jeito para qualquer distância recebida.
 // ---------------------------------------------------------------
 function hashText(text) {
   let hash = 0
@@ -19,27 +21,44 @@ const RIDE_TYPE_CONFIG = {
   fast: { label: 'Motonhão Rápido', multiplier: 1.35, speedKmH: 42 }
 }
 
-export function estimateRide(origin, destination) {
-  const seed = hashText(`${origin.trim().toLowerCase()}|${destination.trim().toLowerCase()}`)
-  const distance = Math.max(1.2, ((seed % 1200) / 100)) // 1.2km a ~13km
+const BASE_FARE = 4.5
+const PRICE_PER_KM = 2.35
 
-  const baseFare = 4.5
-  const perKm = 2.35
-
+// Gera as opções de corrida (econômico/padrão/rápido) a partir de uma distância real em km.
+export function estimateRideFromDistance(distanceKm) {
   return Object.entries(RIDE_TYPE_CONFIG).map(([type, cfg]) => {
-    const price = Number((baseFare + distance * perKm * cfg.multiplier).toFixed(2))
-    const estimatedTime = Math.max(3, Math.round((distance / cfg.speedKmH) * 60))
+    const price = Number((BASE_FARE + distanceKm * PRICE_PER_KM * cfg.multiplier).toFixed(2))
+    const estimatedTime = Math.max(3, Math.round((distanceKm / cfg.speedKmH) * 60))
     return {
       rideType: type,
       label: cfg.label,
-      distance: Number(distance.toFixed(2)),
+      distance: Number(distanceKm.toFixed(2)),
       estimatedTime,
       price
     }
   })
 }
 
-export async function createRide({ passengerId, origin, destination, distance, estimatedTime, price, rideType, paymentMethod }) {
+// Estimativa simulada (fallback), usada quando o OpenStreetMap não
+// consegue geocodificar o endereço digitado pelo usuário.
+export function estimateRide(origin, destination) {
+  const seed = hashText(`${origin.trim().toLowerCase()}|${destination.trim().toLowerCase()}`)
+  const distance = Math.max(1.2, (seed % 1200) / 100) // 1.2km a ~13km
+  return estimateRideFromDistance(distance)
+}
+
+export async function createRide({
+  passengerId,
+  origin,
+  destination,
+  distance,
+  estimatedTime,
+  price,
+  rideType,
+  paymentMethod,
+  originCoords,
+  destinationCoords
+}) {
   const { data, error } = await supabase
     .from('rides')
     .insert({
@@ -51,7 +70,11 @@ export async function createRide({ passengerId, origin, destination, distance, e
       price,
       ride_type: rideType,
       payment_method: paymentMethod,
-      status: 'searching'
+      status: 'searching',
+      origin_lat: originCoords?.lat ?? null,
+      origin_lng: originCoords?.lon ?? null,
+      destination_lat: destinationCoords?.lat ?? null,
+      destination_lng: destinationCoords?.lon ?? null
     })
     .select()
     .single()

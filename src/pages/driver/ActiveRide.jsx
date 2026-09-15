@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useRide } from '../../context/RideContext'
 import { updateRideStatus, cancelRide } from '../../services/rideService'
 import { useToast } from '../../context/ToastContext'
+import MapReal from '../../components/MapReal'
 import MapMock from '../../components/MapMock'
 import RideStatus from '../../components/RideStatus'
 import Card from '../../components/Card'
@@ -41,6 +42,14 @@ export default function DriverActiveRide() {
 
   const step = NEXT_STATUS[activeRide.status]
 
+  // Corridas criadas antes da integração com o OSM não têm coordenadas salvas;
+  // nesse caso caímos de volta para o mapa simulado, sem quebrar nada.
+  const hasCoords =
+    activeRide.origin_lat != null &&
+    activeRide.origin_lng != null &&
+    activeRide.destination_lat != null &&
+    activeRide.destination_lng != null
+
   async function handleAdvance() {
     try {
       await updateRideStatus(activeRide.id, step.next)
@@ -63,7 +72,15 @@ export default function DriverActiveRide() {
     <div className="page">
       <h1>Corrida em andamento</h1>
 
-      <MapMock origin={activeRide.origin} destination={activeRide.destination} status={activeRide.status} />
+      {hasCoords ? (
+        <MapReal
+          origin={{ lat: activeRide.origin_lat, lon: activeRide.origin_lng }}
+          destination={{ lat: activeRide.destination_lat, lon: activeRide.destination_lng }}
+        />
+      ) : (
+        <MapMock origin={activeRide.origin} destination={activeRide.destination} status={activeRide.status} />
+      )}
+
       <RideStatus status={activeRide.status} />
 
       <Card>
