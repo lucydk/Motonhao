@@ -15,8 +15,11 @@ export default function DashboardLayout() {
       <OfflineBanner />
       <UpdatePrompt />
       <header className="dashboard-topbar">
-        <span className="navbar-brand">Moton<span>hão</span></span>
-      </header>
+  <div className="navbar-brand">
+    <span className="logo-moto">MOTO</span>
+    <span className="logo-nhao">NHÃO</span>
+  </div>
+</header>
       <main className="dashboard-main">
         <Outlet />
       </main>

@@ -4,8 +4,17 @@
   display: flex; align-items: center; padding: 16px 20px;
   position: sticky; top: 0; z-index: 20; background: var(--color-surface-2);
 }
-.dashboard-topbar .navbar-brand { font-size: 1.15rem; }
+.dashboard-topbar .navbar-brand {
+  font-size: 1.15rem;
+}
 
+.dashboard-topbar .navbar-brand .logo-moto {
+  color: #ffffff !important;
+}
+
+.dashboard-topbar .navbar-brand .logo-nhao {
+  color: #ff6a00 !important;
+}
 .dashboard-main { padding-bottom: var(--bottom-nav-height); }
 
 .bottom-nav {
@@ -33,4 +42,35 @@
   .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); bottom: 16px; border-radius: 999px; padding: 4px; }
   .bottom-nav-item { border-top: none; border-radius: 999px; }
   .bottom-nav-item.is-active { background: rgba(255,212,0,0.15); }
+}
+/* CORREÇÃO DA LOGO NO DASHBOARD */
+
+.dashboard-topbar .navbar-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: #080808 !important;
+  padding: 8px 12px !important;
+  border-radius: 7px !important;
+  text-decoration: none !important;
+  font-family: var(--font-display) !important;
+  font-size: 1.15rem !important;
+  font-weight: 900 !important;
+  font-style: italic !important;
+  letter-spacing: -0.07em !important;
+  line-height: 1 !important;
+  transform: skew(-5deg);
+  box-shadow: 4px 4px 0 #ff6a00 !important;
+}
+
+.dashboard-topbar .navbar-brand .logo-moto {
+  color: #fff !important;
+}
+
+.dashboard-topbar .navbar-brand .logo-nhao {
+  color: #ff6a00 !important;
+}
+
+.dashboard-topbar .navbar-brand:hover {
+  transform: skew(-5deg) translateY(-1px);
+  box-shadow: 5px 5px 0 #ff6a00 !important;
 }
