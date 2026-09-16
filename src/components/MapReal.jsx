@@ -43,7 +43,10 @@ function FitBounds({ origin, destination, current, zoom }) {
     } else if (current) {
       map.setView([current.lat, current.lon], zoom)
     }
-  }, [origin, destination, current, zoom, map])
+    // Só reenquadra quando os PONTOS mudam de verdade (não a cada pixel de
+    // arraste) — o próprio Leaflet mantém o pino visível durante o drag.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [origin?.lat, origin?.lon, destination?.lat, destination?.lon, current?.lat, current?.lon, zoom, map])
 
   return null
 }
@@ -58,15 +61,40 @@ function ClickToPick({ onPick }) {
   return null
 }
 
+function DraggableMarker({ position, icon, onChange }) {
+  return (
+    <Marker
+      position={position}
+      icon={icon}
+      draggable={!!onChange}
+      eventHandlers={
+        onChange
+          ? {
+              dragend: (e) => {
+                const pos = e.target.getLatLng()
+                onChange({ lat: pos.lat, lon: pos.lng })
+              }
+            }
+          : undefined
+      }
+    />
+  )
+}
+
 // origin / destination / current: { lat, lon } | undefined
 // current = localização atual (pino azul); passe onCurrentChange para deixá-lo
-// arrastável e permitir tocar no mapa para reposicioná-lo manualmente
+// arrastável e permitir tocar no mapa para reposicioná-lo manualmente.
+// onOriginChange / onDestinationChange: se passados, deixam os respectivos
+// pinos arrastáveis (usado na tela "Escolha sua corrida" para corrigir um
+// endereço que o OpenStreetMap posicionou no meio da rua, e não na casa certa).
 // routePath: array de [lat, lon] retornado por osmService.getRoute (opcional)
 export default function MapReal({
   origin,
   destination,
   current,
   onCurrentChange,
+  onOriginChange,
+  onDestinationChange,
   routePath,
   zoom = 16,
   defaultCenter = [-14.235, -51.9253] // centro do Brasil, só usado se nada mais estiver disponível
@@ -80,6 +108,11 @@ export default function MapReal({
         : defaultCenter
 
   const initialZoom = current || origin || destination ? zoom : 4
+  const editableHint = onOriginChange || onDestinationChange
+    ? 'Se o pino não caiu no lugar certo, arraste-o até o endereço correto.'
+    : onCurrentChange
+      ? 'Toque no mapa ou arraste o pino para ajustar sua localização.'
+      : null
 
   return (
     <div className="map-real">
@@ -89,31 +122,21 @@ export default function MapReal({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {current ? (
-          <Marker
-            position={[current.lat, current.lon]}
-            icon={currentIcon}
-            draggable={!!onCurrentChange}
-            eventHandlers={
-              onCurrentChange
-                ? {
-                    dragend: (e) => {
-                      const pos = e.target.getLatLng()
-                      onCurrentChange({ lat: pos.lat, lon: pos.lng })
-                    }
-                  }
-                : undefined
-            }
-          />
+          <DraggableMarker position={[current.lat, current.lon]} icon={currentIcon} onChange={onCurrentChange} />
         ) : null}
-        {origin ? <Marker position={[origin.lat, origin.lon]} icon={originIcon} /> : null}
-        {destination ? <Marker position={[destination.lat, destination.lon]} icon={destinationIcon} /> : null}
+        {origin ? (
+          <DraggableMarker position={[origin.lat, origin.lon]} icon={originIcon} onChange={onOriginChange} />
+        ) : null}
+        {destination ? (
+          <DraggableMarker position={[destination.lat, destination.lon]} icon={destinationIcon} onChange={onDestinationChange} />
+        ) : null}
         {routePath?.length ? (
           <Polyline positions={routePath} pathOptions={{ color: '#0A0A0A', weight: 4 }} />
         ) : null}
         {onCurrentChange ? <ClickToPick onPick={onCurrentChange} /> : null}
         <FitBounds origin={origin} destination={destination} current={current} zoom={zoom} />
       </MapContainer>
-      {onCurrentChange ? <p className="map-hint">Toque no mapa ou arraste o pino para ajustar sua localização.</p> : null}
+      {editableHint ? <p className="map-hint">{editableHint}</p> : null}
     </div>
   )
 }

@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react'
 
+const DISMISS_KEY = 'motonhao_install_dismissed'
+
 export default function InstallPWA() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [isStandalone, setIsStandalone] = useState(false)
-  const [dismissed, setDismissed] = useState(false)
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return sessionStorage.getItem(DISMISS_KEY) === '1'
+    } catch {
+      return false
+    }
+  })
 
   useEffect(() => {
     const standalone =
@@ -27,12 +35,21 @@ export default function InstallPWA() {
     setDeferredPrompt(null)
   }
 
+  function handleDismiss() {
+    setDismissed(true)
+    try {
+      sessionStorage.setItem(DISMISS_KEY, '1')
+    } catch {
+      // sem problema, só não persiste
+    }
+  }
+
   return (
     <div className="install-banner">
       <span>Instale o Motonhão no seu aparelho para uma experiência completa.</span>
       <div className="install-banner-actions">
         <button className="btn btn-primary btn-sm" onClick={handleInstall}>Instalar Motonhão</button>
-        <button className="btn btn-ghost btn-sm" onClick={() => setDismissed(true)}>Agora não</button>
+        <button className="btn btn-ghost btn-sm" onClick={handleDismiss}>Agora não</button>
       </div>
     </div>
   )

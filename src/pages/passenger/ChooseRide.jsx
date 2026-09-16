@@ -16,6 +16,7 @@ export default function ChooseRide() {
   const [coords, setCoords] = useState({ origin: null, destination: null })
   const [routePath, setRoutePath] = useState([])
   const [loading, setLoading] = useState(true)
+  const [adjusting, setAdjusting] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -26,8 +27,6 @@ export default function ChooseRide() {
 
     async function loadRoute() {
       try {
-        // Usa o ponto que o usuário já confirmou no dashboard (GPS ou marcado no
-        // mapa); só refaz a busca se, por algum motivo, ele não tiver vindo.
         const near = nearFromDashboard || (await getReferenceLocation())
 
         const [originPoint, destinationPoint] = await Promise.all([
@@ -58,6 +57,40 @@ export default function ChooseRide() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [origin, destination])
 
+  // Recalcula distância/preço/traçado sempre que o usuário arrasta um dos
+  // pinos para corrigir uma posição que o OpenStreetMap acertou só aproximada.
+  async function recalcRoute(originPoint, destinationPoint) {
+    if (!originPoint || !destinationPoint) return
+    setAdjusting(true)
+    setError('')
+    try {
+      const route = await getRoute(originPoint, destinationPoint)
+      setRoutePath(route.path)
+      setOptions(estimateRideFromDistance(route.distanceKm))
+      setSelected(null) // preço mudou, precisa escolher de novo
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setAdjusting(false)
+    }
+  }
+
+  function handleOriginDrag(point) {
+    setCoords((prev) => {
+      const updated = { ...prev, origin: { ...point, displayName: prev.origin?.displayName } }
+      recalcRoute(updated.origin, updated.destination)
+      return updated
+    })
+  }
+
+  function handleDestinationDrag(point) {
+    setCoords((prev) => {
+      const updated = { ...prev, destination: { ...point, displayName: prev.destination?.displayName } }
+      recalcRoute(updated.origin, updated.destination)
+      return updated
+    })
+  }
+
   if (!origin || !destination) return <Navigate to="/passenger" replace />
 
   function handleContinue() {
@@ -78,7 +111,14 @@ export default function ChooseRide() {
       <h1>Escolha sua corrida</h1>
       <p className="page-subtitle">{origin} → {destination}</p>
 
-      <MapReal origin={coords.origin} destination={coords.destination} routePath={routePath} zoom={15} />
+      <MapReal
+        origin={coords.origin}
+        destination={coords.destination}
+        routePath={routePath}
+        zoom={15}
+        onOriginChange={handleOriginDrag}
+        onDestinationChange={handleDestinationDrag}
+      />
 
       {coords.origin && coords.destination ? (
         <p className="map-caption">
@@ -91,6 +131,7 @@ export default function ChooseRide() {
       ) : (
         <>
           {error ? <p className="form-error">{error}</p> : null}
+          {adjusting ? <p className="map-caption">Recalculando…</p> : null}
 
           <div className="ride-options">
             {options.map((opt) => (

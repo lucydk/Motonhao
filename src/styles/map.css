@@ -76,12 +76,6 @@
   cursor: default;
 }
 
-/* Campo "Número" (casa), mais estreito, ao lado do endereço */
-.field-number {
-  max-width: 90px;
-  flex: 0 0 90px;
-}
-
 /* Linha "📍 Referência: <cidade> · trocar" */
 .reference-row {
   display: flex;
@@ -173,4 +167,74 @@
 .admin-action-btn:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+/* ==========================================================
+   CORREÇÕES DE BUGS DO CSS ORIGINAL
+   ========================================================== */
+
+/* O CSS original tinha ".field-row { display: auto; }" — "auto" não é um
+   valor válido para "display" em CSS, então o navegador ignora a regra e usa
+   o padrão (bloco), fazendo os campos empilharem em vez de ficar lado a lado.
+   Isso quebrava o alinhamento no cadastro (senha/confirmar senha, dados da
+   moto) e também o campo de número do endereço. Esta regra sobrescreve a
+   original (carregada depois dela no main.jsx, então tem prioridade). */
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.field-row > * {
+  flex: 1 1 160px;
+}
+
+/* O componente Input aplica a className recebida no <input>, não no <label>
+   que envolve ele — por isso ".field-number" sozinho não conseguia encolher
+   a caixa (quem precisa encolher é o <label>, não o <input> por dentro dele).
+   ":has()" seleciona o <label> que contém um input com essa classe. */
+.field-row .field:has(> input.field-number) {
+  flex: 0 0 96px;
+  max-width: 96px;
+}
+
+/* Botão "Agora não" do banner de instalação: o banner tem fundo escuro, então
+   o texto precisa ser claro por padrão (antes só ficava legível no hover) */
+.install-banner .btn-ghost {
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.install-banner .btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+}
+
+/* Banners de instalação/atualização responsivos em telas pequenas, para não
+   estourar a largura da tela em celulares menores */
+@media (max-width: 420px) {
+  .install-banner,
+  .update-banner {
+    left: 12px;
+    right: 12px;
+    max-width: none;
+  }
+
+  .update-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Campo de origem + botão "usar localização": empilha em telas bem estreitas
+   para o botão não espremer o campo de texto até ficar ilegível */
+@media (max-width: 380px) {
+  .field-with-action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .use-location-btn {
+    width: 100%;
+  }
 }
