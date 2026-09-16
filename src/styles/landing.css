@@ -589,3 +589,17 @@
 
   border-top: 1px solid var(--color-border);
 }
+/* Logo Motonhão — versão oficial */
+.navbar .navbar-brand {
+  background: #080808 !important;
+  color: #ffffff !important;
+  box-shadow: 4px 4px 0 #ff6a00 !important;
+}
+
+.navbar .navbar-brand .logo-moto {
+  color: #ffffff !important;
+}
+
+.navbar .navbar-brand .logo-nhao {
+  color: #ff6a00 !important;
+}
