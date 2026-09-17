@@ -22,7 +22,7 @@ export default function DashboardLayout() {
       <UpdatePrompt />
       <header className="dashboard-topbar">
         <Link to={HOME_ROUTE[role] || '/'} className="navbar-brand">
-          Moton<span>hão</span>
+          <span>Moton</span><span>hão</span>
         </Link>
       </header>
       <main className="dashboard-main">
