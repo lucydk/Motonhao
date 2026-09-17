@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase'
+import { getDriverShare } from '../config/platformConfig'
 
 export async function getDriverByProfileId(profileId) {
   const { data, error } = await supabase
@@ -63,6 +64,11 @@ export async function rejectDriver(driverId, note) {
   return data
 }
 
+// ---------------------------------------------------------------
+// Ganhos do motorista — sempre a parte dele (75%), nunca o valor
+// total da corrida que o passageiro pagou.
+// ---------------------------------------------------------------
+
 export async function getEarnings(driverId) {
   const { data, error } = await supabase
     .from('rides')
@@ -84,13 +90,13 @@ export async function getEarnings(driverId) {
 
   data.forEach((ride) => {
     const completedAt = ride.completed_at ? new Date(ride.completed_at) : null
-    const price = Number(ride.price) || 0
-    total += price
-    if (completedAt && completedAt >= startOfDay) today += price
-    if (completedAt && completedAt >= startOfWeek) week += price
+    const driverShare = getDriverShare(ride.price)
+    total += driverShare
+    if (completedAt && completedAt >= startOfDay) today += driverShare
+    if (completedAt && completedAt >= startOfWeek) week += driverShare
     if (completedAt) {
       const key = completedAt.toISOString().slice(0, 10)
-      byDay[key] = (byDay[key] || 0) + price
+      byDay[key] = (byDay[key] || 0) + driverShare
     }
   })
 

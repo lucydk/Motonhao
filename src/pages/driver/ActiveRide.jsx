@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useRide } from '../../context/RideContext'
 import { updateRideStatus, cancelRide } from '../../services/rideService'
+import { getDriverShare } from '../../config/platformConfig'
 import { useToast } from '../../context/ToastContext'
 import MapReal from '../../components/MapReal'
 import MapMock from '../../components/MapMock'
@@ -90,7 +91,7 @@ export default function DriverActiveRide() {
         <div className="confirm-row"><span>Pagamento</span><strong>{
           activeRide.payment_method === 'cash' ? 'Dinheiro' : activeRide.payment_method === 'pix' ? 'Pix' : 'Cartão'
         }</strong></div>
-        <div className="confirm-row confirm-row-price"><span>Valor</span><strong>R$ {Number(activeRide.price).toFixed(2)}</strong></div>
+        <div className="confirm-row confirm-row-price"><span>Valor</span><strong>R$ {getDriverShare(activeRide.price).toFixed(2)}</strong></div>
       </Card>
 
       {step ? <Button fullWidth onClick={handleAdvance}>{step.label}</Button> : null}

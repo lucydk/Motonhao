@@ -160,6 +160,7 @@ export default function DriverDashboard() {
                   key={ride.id}
                   ride={ride}
                   showActions
+                  forDriver
                   onAccept={handleAccept}
                   onDecline={(r) => removeRide(r.id)}
                 />

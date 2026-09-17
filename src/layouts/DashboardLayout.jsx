@@ -1,9 +1,15 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import BottomNavigation from '../components/BottomNavigation'
 import OfflineBanner from '../components/OfflineBanner'
 import UpdatePrompt from '../components/UpdatePrompt'
 import Loading from '../components/Loading'
+
+const HOME_ROUTE = {
+  passenger: '/passenger',
+  driver: '/driver',
+  admin: '/admin'
+}
 
 export default function DashboardLayout() {
   const { role, loading } = useAuth()
@@ -15,11 +21,10 @@ export default function DashboardLayout() {
       <OfflineBanner />
       <UpdatePrompt />
       <header className="dashboard-topbar">
-  <div className="navbar-brand">
-    <span className="logo-moto">MOTO</span>
-    <span className="logo-nhao">NHÃO</span>
-  </div>
-</header>
+        <Link to={HOME_ROUTE[role] || '/'} className="navbar-brand">
+          Moton<span>hão</span>
+        </Link>
+      </header>
       <main className="dashboard-main">
         <Outlet />
       </main>

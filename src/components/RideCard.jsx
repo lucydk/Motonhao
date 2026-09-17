@@ -1,3 +1,5 @@
+import { getDriverShare } from '../config/platformConfig'
+
 const RIDE_TYPE_LABEL = { economic: 'Econômico', standard: 'Padrão', fast: 'Rápido' }
 const STATUS_LABEL = {
   searching: 'Procurando',
@@ -8,8 +10,11 @@ const STATUS_LABEL = {
   cancelled: 'Cancelada'
 }
 
-export default function RideCard({ ride, onAccept, onDecline, showActions = false }) {
+// forDriver: quando true, mostra a parte do motorista (75%) em vez do valor
+// total que o passageiro paga — usado nas telas do motociclista.
+export default function RideCard({ ride, onAccept, onDecline, showActions = false, forDriver = false }) {
   const date = new Date(ride.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+  const displayPrice = forDriver ? getDriverShare(ride.price) : Number(ride.price)
 
   return (
     <div className="ride-card">
@@ -31,7 +36,7 @@ export default function RideCard({ ride, onAccept, onDecline, showActions = fals
         <span>{RIDE_TYPE_LABEL[ride.ride_type] || ride.ride_type}</span>
         <span>{ride.distance} km</span>
         <span>{ride.estimated_time} min</span>
-        <strong>R$ {Number(ride.price).toFixed(2)}</strong>
+        <strong>R$ {displayPrice.toFixed(2)}</strong>
       </div>
 
       {ride.driver?.profile ? (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { PLATFORM_COMMISSION_RATE } from '../../config/platformConfig'
 import Card from '../../components/Card'
 import Loading from '../../components/Loading'
 import { Link } from 'react-router-dom'
@@ -22,8 +23,11 @@ export default function AdminDashboard() {
       const completed = ridesData.filter((r) => r.status === 'completed').length
       const cancelled = ridesData.filter((r) => r.status === 'cancelled').length
       const revenue = ridesData.filter((r) => r.status === 'completed').reduce((sum, r) => sum + Number(r.price), 0)
+      // Receita líquida da plataforma = comissão sobre o faturamento bruto
+      // (o restante do faturamento é o que os motociclistas recebem)
+      const netRevenue = Number((revenue * PLATFORM_COMMISSION_RATE).toFixed(2))
 
-      setStats({ totalUsers, totalDrivers, totalRides: ridesData.length, inProgress, completed, cancelled, revenue })
+      setStats({ totalUsers, totalDrivers, totalRides: ridesData.length, inProgress, completed, cancelled, revenue, netRevenue })
     }
     load()
   }, [])
@@ -41,7 +45,11 @@ export default function AdminDashboard() {
         <Card className="stat-card"><span>Em andamento</span><strong>{stats.inProgress}</strong></Card>
         <Card className="stat-card"><span>Finalizadas</span><strong>{stats.completed}</strong></Card>
         <Card className="stat-card"><span>Canceladas</span><strong>{stats.cancelled}</strong></Card>
-        <Card className="stat-card stat-card-wide"><span>Faturamento</span><strong>R$ {stats.revenue.toFixed(2)}</strong></Card>
+        <Card className="stat-card stat-card-wide"><span>Faturamento (bruto)</span><strong>R$ {stats.revenue.toFixed(2)}</strong></Card>
+        <Card className="stat-card stat-card-wide">
+          <span>Receita líquida da plataforma ({Math.round(PLATFORM_COMMISSION_RATE * 100)}%)</span>
+          <strong>R$ {stats.netRevenue.toFixed(2)}</strong>
+        </Card>
       </div>
 
       <div className="admin-links">
