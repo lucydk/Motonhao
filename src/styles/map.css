@@ -1,0 +1,247 @@
+/* ---------- Mapa real (OpenStreetMap / Leaflet) ---------- */
+.map-real {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.map-real .leaflet-container {
+  font-family: var(--font-body);
+}
+
+.map-marker {
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+}
+
+.map-marker-current {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-marker-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1a73e8;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.3);
+  display: block;
+}
+
+/* Dica de "toque no mapa para ajustar", abaixo do mapa editável */
+.map-hint {
+  font-size: 12px;
+  color: var(--color-text-secondary, #6b6b6b);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* Legenda com o endereço encontrado pelo OpenStreetMap, abaixo do mapa */
+.map-caption {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b6b6b);
+  margin-top: 6px;
+}
+
+/* Botão "usar minha localização" ao lado do campo de origem */
+.field-with-action {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.field-with-action > *:first-child {
+  flex: 1;
+}
+
+.use-location-btn {
+  height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: #fff;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.use-location-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Linha "📍 Referência: <cidade> · trocar" */
+.reference-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b6b6b);
+  margin-bottom: 8px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* ---------- Verificação de motociclista ---------- */
+.verification-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 48px 16px;
+}
+
+.verification-icon {
+  font-size: 40px;
+}
+
+.verification-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.verification-pending {
+  background: #fff4d6;
+  color: #8a6100;
+}
+
+.verification-approved {
+  background: #d9f7e6;
+  color: #0a7a41;
+}
+
+.verification-rejected {
+  background: #fde0e0;
+  color: #a01414;
+}
+
+.verification-note {
+  font-size: 12px;
+  color: var(--color-text-secondary, #6b6b6b);
+  margin-top: 4px;
+  max-width: 200px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.admin-action-btn {
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-action-approve {
+  background: #0a7a41;
+  color: #fff;
+}
+
+.admin-action-reject {
+  background: #a01414;
+  color: #fff;
+}
+
+.admin-action-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ==========================================================
+   CORREÇÕES DE BUGS DO CSS ORIGINAL
+   ========================================================== */
+
+/* O CSS original tinha ".field-row { display: auto; }" — "auto" não é um
+   valor válido para "display" em CSS, então o navegador ignora a regra e usa
+   o padrão (bloco), fazendo os campos empilharem em vez de ficar lado a lado.
+   Isso quebrava o alinhamento no cadastro (senha/confirmar senha, dados da
+   moto) e também o campo de número do endereço. Esta regra sobrescreve a
+   original (carregada depois dela no main.jsx, então tem prioridade). */
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.field-row > * {
+  flex: 1 1 160px;
+}
+
+/* O componente Input aplica a className recebida no <input>, não no <label>
+   que envolve ele — por isso ".field-number" sozinho não conseguia encolher
+   a caixa (quem precisa encolher é o <label>, não o <input> por dentro dele).
+   ":has()" seleciona o <label> que contém um input com essa classe. */
+.field-row .field:has(> input.field-number) {
+  flex: 0 0 96px;
+  max-width: 96px;
+}
+
+/* Botão "Agora não" do banner de instalação: o banner tem fundo escuro, então
+   o texto precisa ser claro por padrão (antes só ficava legível no hover) */
+.install-banner .btn-ghost {
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.install-banner .btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+}
+
+/* Banners de instalação/atualização responsivos em telas pequenas, para não
+   estourar a largura da tela em celulares menores */
+@media (max-width: 420px) {
+  .install-banner,
+  .update-banner {
+    left: 12px;
+    right: 12px;
+    max-width: none;
+  }
+
+  .update-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Campo de origem + botão "usar localização": empilha em telas bem estreitas
+   para o botão não espremer o campo de texto até ficar ilegível */
+@media (max-width: 380px) {
+  .field-with-action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .use-location-btn {
+    width: 100%;
+  }
+}
+
+/* Moto do motociclista andando no mapa durante a corrida */
+.map-marker-vehicle {
+  font-size: 24px;
+  align-items: center;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
